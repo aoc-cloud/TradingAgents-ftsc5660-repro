@@ -96,14 +96,37 @@ CR is not reproducible with this harness (different scoring design — see
 
 ## 5. Modification: debate ablation
 
-**Change:** `max_debate_rounds` 1 → 0 (research debate removed; everything
-else identical — same 21 cells, same models, same seeds-free config).
+**Change:** `max_debate_rounds` 1 → 0 (bull/bear researcher debate removed;
+everything else identical — same AAPL cells, same models, same config).
 
 **Why:** the paper claims the bull/bear debate "significantly enhances
 trading performance"; removing it is an isolated, measurable ablation.
 
-(fill: before/after table — hit rate, mean alpha per rating, plus any
-qualitative differences in the decision reports)
+**Results (AAPL, same 7 cells, debate on vs off):**
+
+| | Debate ON (repro) | Debate OFF (ablation) |
+|---|---|---|
+| Ratings | Underweight 5, Hold 2 | Overweight 7 |
+| Directional calls | 5 | 7 |
+| Direction hit rate | **80%** | **29%** |
+| Mean alpha of directional calls | +0.06% | -0.57% |
+| Never-Hold behavior | no (2 Holds) | yes (7/7 directional) |
+
+**Measured impact:**
+
+1. **Rating direction flipped:** with debate, every AAPL cell in Q1 2024 was
+   Underweight or Hold; without debate, every cell was Overweight. The
+   bull/bear debate injects the bear case that the trader alone does not
+   reach.
+2. **Hit rate collapsed:** 80% → 29% on identical cells. In Q1 2024 AAPL
+   fell ~11%, so the debate's bearish pressure was correct; the no-debate
+   variant was bullish 7/7 and wrong 5/7.
+3. **Hold disappeared:** without debate the system never chose Hold — the
+   debate is what creates the "do nothing" option.
+
+This is consistent with the paper's claim that agentic debate materially
+improves decisions — at least on this ticker/window, the debate was the
+difference between correctly-cautious and confidently-wrong.
 
 ## 6. Debug diary
 
@@ -132,13 +155,22 @@ qualitative differences in the decision reports)
 
 - **What reproduces:** the agentic architecture and end-to-end pipeline work
   as described; decisions are explainable and data is point-in-time verified.
-- **What does not:** the paper's exact numbers cannot be reproduced from the
-  current repository (evolved code, different model, live text feeds, and a
-  different scoring harness) — this is expected and documented by the authors.
+- **Quantitative headline:** on the paper's window, the DeepSeek-powered
+  system's per-cell alpha (+0.48%) was ~2.8× buy-and-hold (+0.17%), and 61%
+  of its directional calls were correct — the paper's "beats buy-and-hold"
+  claim holds directionally.
+- **The debate matters:** removing the bull/bear debate flipped ratings from
+  cautious/bearish to uniformly bullish and collapsed the hit rate from 80%
+  to 29% on AAPL — direct evidence for the paper's claim that agentic debate
+  enhances performance.
+- **What does not reproduce:** the paper's exact CR/Sharpe magnitudes cannot
+  be reproduced from the current repository (evolved code, different model,
+  live text feeds, different scoring harness) — expected, and the authors'
+  own README warns about it.
 - **Recommendation to future users:** pin the repository version and model if
   exact-number reproduction matters; otherwise treat the framework as a
   research scaffold and compare *directional* performance on a fixed grid, as
-  we do here.
+  we do here. Budget for API balance and stable connectivity (both bit us).
 
 ## 8. Artifacts
 
