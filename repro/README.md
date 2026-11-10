@@ -114,6 +114,17 @@ and mean alpha on the identical 21-cell grid.
   B&H for the same window (-10.8%): GOOGL/AMZN match within ~1.5pp, so the
   paper's AAPL figure likely used a different start convention or data vendor.
 
-## Results
+## Results (summary)
 
-(fill in after the sweeps — see report)
+Reproduction, 21 cells (7 dates × AAPL/GOOGL/AMZN, DeepSeek):
+
+| Rating | n | direction hit rate | mean alpha vs SPY |
+|---|---|---|---|
+| Overweight | 5 | 80% | +0.92% |
+| Underweight | 13 | 54% | +0.60% |
+| Hold | 3 | — | -0.80% |
+
+Weighted mean alpha **+0.48%/cell** vs buy-and-hold **+0.17%/cell**
+(≈2.8×). Modification (debate OFF, same 7 AAPL cells): ratings flipped to
+Overweight 7/7, hit rate fell 80% → 29%. Full write-up in `repro/report.md`;
+per-run details in `repro_results/backtest/<run_id>/trading_memory.md`.
