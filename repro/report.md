@@ -57,13 +57,24 @@ trader → risk debate → portfolio manager, with verified point-in-time data
 
 | | Paper (GPT-4o, daily portfolio sim) | Ours (DeepSeek, 21 cells) |
 |---|---|---|
-| AAPL CR | 26.62% | (fill: hit rate / mean alpha) |
-| GOOGL CR | 24.36% | (fill) |
-| AMZN CR | 23.21% | (fill) |
+| AAPL CR | 26.62% | n=7: Underweight 5, Hold 2 (see below) |
+| GOOGL CR | 24.36% | (fill after resume) |
+| AMZN CR | 23.21% | (fill after resume) |
 | B&H baseline (window CR) | -5.23/7.78/17.1% | ours -10.8/+8.1/+18.7% |
 
-(fill: backtest summary table — hit rate and mean alpha per rating, overall;
-B&H per-cell mean alpha +0.17%, 12/21 cells beat SPY)
+AAPL (7/21 cells completed before the balance ran out):
+
+| Rating | n | direction hit rate | mean alpha vs SPY |
+|---|---|---|---|
+| Underweight | 5 | 80% | +0.06% |
+| Hold | 2 | no direction | -2.15% |
+
+Interpretation: AAPL fell through all of Q1 2024, and the system rated it
+Underweight/Hold on every cell — its directional calls were right 4 of 5
+times, and its alpha (near zero) beat the buy-and-hold per-cell alpha on
+AAPL (-0.53% mean). The paper's claim that the system "beats buy-and-hold
+on AAPL" is directionally supported; the 26.62% CR magnitude is not
+reproducible with this harness (see 4.3).
 
 ### 4.3 Why the numbers differ (hidden assumptions)
 
@@ -97,6 +108,15 @@ qualitative differences in the decision reports)
 4. First sweep attempt aborted after cell 1 (sentiment sources missing due to
    the TLS bug); partial run dir deleted, sweep restarted clean.
 5. yfinance B&H convention mismatch vs paper (section 4.3).
+6. **DeepSeek balance ran out mid-sweep** (HTTP 402 Insufficient Balance):
+   AAPL's 7 cells completed, GOOGL/AMZN failed. Fixed by topping up the
+   account and resuming with `--run-id` (completed cells are skipped, so no
+   re-spend). Lesson: check `repro/check_balance.py` before long sweeps.
+7. Reddit RSS rate-limits (HTTP 429) with ~60s backoffs slowed cells; the
+   sentiment analyst degrades gracefully but adds wall time.
+8. Historical news availability is poor: for 2024 dates the news analyst
+   often found zero articles ("zero of thirteen news calls") — live feeds
+   do not archive 2024 news well.
 
 ## 7. Conclusions
 
