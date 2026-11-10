@@ -20,6 +20,9 @@ cd "$(dirname "$0")/.."
 
 # Debate rounds: 1 by default; set DEBATE=0 to remove the research debate.
 DEBATE="${DEBATE:-1}"
+# Which stocks to sweep: all three by default; e.g. TICKERS=AAPL for a
+# cheaper single-ticker sweep (used for the AAPL-only ablation).
+TICKERS="${TICKERS:-AAPL,GOOGL,AMZN}"
 
 # --- Framework settings (documented in the report) --------------------------
 export TRADINGAGENTS_LLM_PROVIDER=deepseek          # which LLM provider
@@ -39,7 +42,7 @@ export SSL_CERT_FILE="$PWD/.venv/lib/python3.14/site-packages/certifi/cacert.pem
 # The grid: the paper's backtest window (2024 Q1), sampled every 14 days.
 # 3 tickers x 7 dates = 21 cells. The framework scores each decision over
 # the 5 trading days after the analysis date, against SPY.
-.venv/bin/tradingagents backtest AAPL,GOOGL,AMZN \
+.venv/bin/tradingagents backtest "$TICKERS" \
   --start 2024-01-02 --end 2024-03-26 --every 14 \
   --analysts market,sentiment,news,fundamentals \
   "$@"

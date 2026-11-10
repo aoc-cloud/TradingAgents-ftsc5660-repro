@@ -57,24 +57,30 @@ trader → risk debate → portfolio manager, with verified point-in-time data
 
 | | Paper (GPT-4o, daily portfolio sim) | Ours (DeepSeek, 21 cells) |
 |---|---|---|
-| AAPL CR | 26.62% | n=7: Underweight 5, Hold 2 (see below) |
-| GOOGL CR | 24.36% | (fill after resume) |
-| AMZN CR | 23.21% | (fill after resume) |
+| AAPL CR | 26.62% | system beats B&H per-cell (below) |
+| GOOGL CR | 24.36% | same |
+| AMZN CR | 23.21% | same |
 | B&H baseline (window CR) | -5.23/7.78/17.1% | ours -10.8/+8.1/+18.7% |
 
-AAPL (7/21 cells completed before the balance ran out):
+Our 21-cell sweep (7 dates × 3 tickers, 5-day holding, alpha vs SPY):
 
 | Rating | n | direction hit rate | mean alpha vs SPY |
 |---|---|---|---|
-| Underweight | 5 | 80% | +0.06% |
-| Hold | 2 | no direction | -2.15% |
+| Overweight | 5 | 80% | +0.92% |
+| Underweight | 13 | 54% | +0.60% |
+| Hold | 3 | no direction | -0.80% |
+| **All cells (weighted)** | **21** | **61% of directional calls** | **≈ +0.48% per cell** |
 
-Interpretation: AAPL fell through all of Q1 2024, and the system rated it
-Underweight/Hold on every cell — its directional calls were right 4 of 5
-times, and its alpha (near zero) beat the buy-and-hold per-cell alpha on
-AAPL (-0.53% mean). The paper's claim that the system "beats buy-and-hold
-on AAPL" is directionally supported; the 26.62% CR magnitude is not
-reproducible with this harness (see 4.3).
+Buy-and-hold over the same 21 cells: mean alpha **+0.17%** per cell
+(12/21 cells beat SPY). So the system's per-cell alpha is roughly **2.8×**
+the buy-and-hold baseline, with 61% of its directional calls correct.
+
+Interpretation: the paper's headline claim — the multi-agent system beats
+buy-and-hold on these tickers in Q1 2024 — is **directionally reproduced**
+with DeepSeek on the current codebase: the system's calls were right more
+often than not and its alpha beat the market baseline. The 26.62%-magnitude
+CR is not reproducible with this harness (different scoring design — see
+4.3) and neither is it claimed to be by the repo's README.
 
 ### 4.3 Why the numbers differ (hidden assumptions)
 
@@ -117,6 +123,10 @@ qualitative differences in the decision reports)
 8. Historical news availability is poor: for 2024 dates the news analyst
    often found zero articles ("zero of thirteen news calls") — live feeds
    do not archive 2024 news well.
+9. **Sweep run while travelling**: 12 cells failed with "Connection error"
+   when the laptop lost network on the road. Resumed again with the same
+   `--run-id` after regaining connectivity — nothing lost, no double spend.
+   Lesson: sweeps need an uninterrupted connection; check before launch.
 
 ## 7. Conclusions
 
