@@ -150,8 +150,7 @@ difference between correctly-cautious and confidently-wrong.
 6. **DeepSeek balance ran out mid-sweep**, HTTP 402 Insufficient Balance:
    AAPL's 7 cells completed, GOOGL and AMZN failed. Fixed by topping up the
    account and resuming with `--run-id`; completed cells are skipped, so
-   nothing was re-spent. Lesson: check `repro/check_balance.py` before long
-   sweeps.
+   nothing was re-spent.
 7. Reddit RSS rate-limits, HTTP 429, with ~60s backoffs slowed cells; the
    sentiment analyst degrades gracefully but adds wall time.
 8. Historical news availability is poor: for 2024 dates the news analyst
