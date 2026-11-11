@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Buy-and-hold baseline for the FTEC5660 reproducibility exercise.
 
@@ -16,23 +15,18 @@ Why: the backtest scores TradingAgents decisions the same way (5 trading
 days, compared against SPY), so this gives us the fair "what would a
 buy-and-hold investor have earned" numbers to compare against.
 
-Usage: .venv/bin/python repro/baseline.py
 """
+
+import time
 
 import yfinance
 
-# These three stocks and seven dates are the exact same grid that
-# repro/run_backtest.sh runs the agents on. Keep them in sync.
 TICKERS = ["AAPL", "GOOGL", "AMZN"]
 DATES = ["2024-01-02", "2024-01-16", "2024-01-30", "2024-02-13",
          "2024-02-27", "2024-03-12", "2024-03-26"]
 
-# The framework scores each decision over 5 trading days after it is made.
-# This must match holding_period_days in the framework's config.
 HOLDING_DAYS = 5
 
-# The paper's Table 1 reports these buy-and-hold numbers for the full
-# window (2024-01-01 to 2024-03-29).
 PAPER_BUY_AND_HOLD = {"AAPL": -5.23, "GOOGL": 7.78, "AMZN": 17.1}
 
 
@@ -42,11 +36,20 @@ def download_closes(ticker: str, start: str, end: str):
     Returns a list of (date, price) pairs, oldest first.
     yfinance gives us a table; we keep only the adjusted close column,
     which accounts for dividends and splits (so returns are fair).
+    Yahoo sometimes fails a single request for no real reason, so we
+    retry up to 3 times with a 2-second pause.
     """
-    df = yfinance.download(ticker, start=start, end=end,
-                           progress=False, auto_adjust=False)
-    # .squeeze() turns a one-column table into a simple series of values
-    # .dropna() removes any days with missing prices (holidays etc.)
+    df = None
+    for attempt in range(3):
+        df = yfinance.download(ticker, start=start, end=end,
+                               progress=False, auto_adjust=False)
+        if df is not None and len(df) > 0:
+            break  # got real data, stop retrying
+        time.sleep(2)
+
+    if df is None or len(df) == 0:
+        return []  # still nothing after 3 tries
+
     closes = df["Adj Close"].squeeze().dropna()
     return list(closes.items())  # [(date, price), (date, price), ...]
 
@@ -81,9 +84,6 @@ def compute_cell_return(prices, spy_prices, target_date):
 
 
 def main():
-    # --- Part 1: per-cell buy-and-hold (same cells as the agent backtest) ---
-    # Fetch a price window that covers the grid plus the 5-day holding tail.
-    # (The grid starts 2024-01-02, so start a bit earlier for safety.)
     spy_prices = download_closes("SPY", "2023-11-15", "2024-04-20")
 
     print(f"Per-cell buy-and-hold over {HOLDING_DAYS} trading days")
@@ -105,12 +105,11 @@ def main():
             print(f"{ticker:<8}{date:<12}{stock_return:>+9.2%}"
                   f"{stock_return - alpha:>+9.2%}{alpha:>+9.2%}")
 
-    # --- Part 2: full-window buy-and-hold vs the paper's Table 1 ---
+    
     print()
     print("Full-window buy-and-hold (2024 Q1, same window as paper Table 1)")
     print(f"{'ticker':<8}{'B&H (ours)':>12}{'paper Table 1':>15}")
     for ticker in TICKERS:
-        # First trading day of 2024 to last trading day of March 2024.
         prices = download_closes(ticker, "2023-12-29", "2024-03-29")
         first_price = prices[0][1]
         last_price = prices[-1][1]
@@ -118,7 +117,7 @@ def main():
         print(f"{ticker:<8}{cr * 100:>+11.2f}%"
               f"{PAPER_BUY_AND_HOLD[ticker]:>+14.2f}%")
 
-    # --- Part 3: one-number summary for the report ---
+
     if all_alphas:
         mean_alpha = sum(all_alphas) / len(all_alphas)
         wins = sum(1 for a in all_alphas if a > 0)
