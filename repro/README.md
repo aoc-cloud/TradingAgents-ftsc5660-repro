@@ -3,29 +3,21 @@
 Reproducing one reported result of **TradingAgents: Multi-Agents LLM Financial
 Trading Framework** (arXiv:2412.20138), plus one well-scoped modification.
 
-- Author / student ID: (fill in)
-- Due: 2026-11-13
+Student ID: 1155269941 CHEN WEIWEN
 
-## What we tried to reproduce
+## What I tried to reproduce
 
 Paper Table 1 reports a 3-month backtest (2024-01-01 to 2024-03-29) of the
 TradingAgents framework (GPT-4o) against buy-and-hold and rule-based baselines
 on AAPL, GOOGL and AMZN:
 
-| Metric | AAPL | GOOGL | AMZN |
-|---|---|---|---|
+| Metric                          | AAPL   | GOOGL  | AMZN   |
+| ------------------------------- | ------ | ------ | ------ |
 | TradingAgents cumulative return | 26.62% | 24.36% | 23.21% |
-| Buy-and-hold cumulative return | -5.23% | 7.78% | 17.1% |
+| Buy-and-hold cumulative return  | -5.23% | 7.78%  | 17.1%  |
 
 **Target claim:** TradingAgents outperforms buy-and-hold on all three tickers
 over the paper's window.
-
-Because the public repository has evolved past the paper version (v0.7.1 at the
-time of this work) and we only have a DeepSeek API key, we follow the
-assignment's "edge case A": same tasks, same window, same scoring concept, but
-DeepSeek models (deepseek-flash for the analyst/trader tier, deepseek-v4-pro
-for the manager tier). Results are therefore **not directly comparable** to the
-paper's numbers; the comparison is as fair as the data allows.
 
 ## Setup
 
@@ -34,7 +26,7 @@ git clone https://github.com/TauricResearch/TradingAgents.git
 cd TradingAgents
 uv venv --python 3.14 && source .venv/bin/activate
 uv pip install .
-cp .env.example .env     # fill in DEEPSEEK_API_KEY (file is gitignored)
+cp .env.example .env     
 ```
 
 Optional but recommended on macOS (fixes TLS for the social-data fetchers):
@@ -100,8 +92,8 @@ All outputs land in `repro_results/backtest/<run_id>/` — the decision log
 
 **Ablation: research debate disabled** (`max_debate_rounds` 1 → 0). The paper
 claims the bull/bear researcher debate "significantly enhances trading
-performance" — we remove exactly that step and measure the change in hit rate
-and mean alpha on the identical 21-cell grid.
+performance" — I remove exactly that step and measure the change in hit rate
+and mean alpha on the identical AAPL cells.
 
 ## Debug diary (highlights)
 
@@ -118,11 +110,11 @@ and mean alpha on the identical 21-cell grid.
 
 Reproduction, 21 cells (7 dates × AAPL/GOOGL/AMZN, DeepSeek):
 
-| Rating | n | direction hit rate | mean alpha vs SPY |
-|---|---|---|---|
-| Overweight | 5 | 80% | +0.92% |
-| Underweight | 13 | 54% | +0.60% |
-| Hold | 3 | — | -0.80% |
+| Rating      | n   | direction hit rate | mean alpha vs SPY |
+| ----------- | --- | ------------------ | ----------------- |
+| Overweight  | 5   | 80%                | +0.92%            |
+| Underweight | 13  | 54%                | +0.60%            |
+| Hold        | 3   | —                  | -0.80%            |
 
 Weighted mean alpha **+0.48%/cell** vs buy-and-hold **+0.17%/cell**
 (≈2.8×). Modification (debate OFF, same 7 AAPL cells): ratings flipped to

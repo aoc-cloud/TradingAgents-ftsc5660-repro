@@ -1,8 +1,6 @@
 # Reproducibility Report: TradingAgents
 
-**Course:** FTEC5660 Agentic AI for Business and FinTech
-**Student:** (fill in)  **Student ID:** (fill in)
-**Due:** 2026-11-13
+**Course:** FTEC5660   **Student:** CHEN WEIWEN   **Student ID:** 1155269941
 
 ---
 
@@ -20,15 +18,16 @@ returns of 26.62% / 24.36% / 23.21% versus buy-and-hold at -5.23% / 7.78% /
 17.1%. In other words, it beats buy-and-hold on every ticker.
 
 We reproduce the *same window and tasks* with the current public repository,
-v0.7.1, using DeepSeek models, as the assignment's edge case A allows because
-the original GPT-4o is not available to us. We score every decision with the
-repository's own backtest harness over a 5-trading-day holding period, with
-alpha measured against SPY.
+using DeepSeek models because the original GPT-4o is not available to us, as
+the assignment's edge case A allows. Results are therefore not directly
+comparable to the paper, since the underlying LLM differs.
+
+We score every decision with the repository's own backtest harness over a
+5-trading-day holding period, with alpha measured against SPY.
 
 ## 2. Setup notes
 
 - Repo: TauricResearch/TradingAgents @ v0.7.1, Python 3.14 virtualenv
-  installed with uv
 - Hardware: Apple-Silicon MacBook, no GPU; compute is API-bound
 - LLM: DeepSeek API, base URL api.deepseek.com, temperature 0.0.
   Quick tier, which serves analysts and trader, runs deepseek-flash;
@@ -60,20 +59,20 @@ A smoke run on AAPL 2024-01-02 is saved under repro_results.
 
 ### 4.2 Backtest — quantitative
 
-| | Paper — GPT-4o, daily portfolio sim | Ours — DeepSeek, 21 cells |
-|---|---|---|
-| AAPL CR | 26.62% | system beats B&H per cell, table below |
-| GOOGL CR | 24.36% | same |
-| AMZN CR | 23.21% | same |
-| B&H baseline, window CR | -5.23/7.78/17.1% | ours -10.8/+8.1/+18.7% |
+|                         | Paper — GPT-4o, daily portfolio sim | Ours — DeepSeek, 21 cells              |
+| ----------------------- | ----------------------------------- | -------------------------------------- |
+| AAPL CR                 | 26.62%                              | system beats B&H per cell, table below |
+| GOOGL CR                | 24.36%                              | same                                   |
+| AMZN CR                 | 23.21%                              | same                                   |
+| B&H baseline, window CR | -5.23/7.78/17.1%                    | ours -10.8/+8.1/+18.7%                 |
 
 Our 21-cell sweep — 7 dates × 3 tickers, 5-day holding, alpha vs SPY:
 
-| Rating | n | direction hit rate | mean alpha vs SPY |
-|---|---|---|---|
-| Overweight | 5 | 80% | +0.92% |
-| Underweight | 13 | 54% | +0.60% |
-| Hold | 3 | no direction | -0.80% |
+| Rating                  | n      | direction hit rate           | mean alpha vs SPY     |
+| ----------------------- | ------ | ---------------------------- | --------------------- |
+| Overweight              | 5      | 80%                          | +0.92%                |
+| Underweight             | 13     | 54%                          | +0.60%                |
+| Hold                    | 3      | no direction                 | -0.80%                |
 | **All cells, weighted** | **21** | **61% of directional calls** | **≈ +0.48% per cell** |
 
 Buy-and-hold over the same 21 cells: mean alpha **+0.17%** per cell, with 12
@@ -113,13 +112,13 @@ trading performance"; removing it is an isolated, measurable ablation.
 
 **Results — AAPL, the same 7 cells, debate on vs off:**
 
-| | Debate ON — repro | Debate OFF — ablation |
-|---|---|---|
-| Ratings | Underweight 5, Hold 2 | Overweight 7 |
-| Directional calls | 5 | 7 |
-| Direction hit rate | **80%** | **29%** |
-| Mean alpha of directional calls | +0.06% | -0.57% |
-| Never-Hold behavior | no — 2 Holds | yes — 7 of 7 directional |
+|                                 | Debate ON — repro     | Debate OFF — ablation    |
+| ------------------------------- | --------------------- | ------------------------ |
+| Ratings                         | Underweight 5, Hold 2 | Overweight 7             |
+| Directional calls               | 5                     | 7                        |
+| Direction hit rate              | **80%**               | **29%**                  |
+| Mean alpha of directional calls | +0.06%                | -0.57%                   |
+| Never-Hold behavior             | no — 2 Holds          | yes — 7 of 7 directional |
 
 **Measured impact:**
 
@@ -170,15 +169,10 @@ difference between correctly-cautious and confidently-wrong.
   to 29% on AAPL — direct evidence for the paper's claim that agentic debate
   enhances performance.
 - **What does not reproduce:** the paper's exact CR and Sharpe magnitudes
-  cannot be reproduced from the current repository. The code evolved, the
-  model differs, text feeds are live, and the scoring harness changed — the
-  authors' own README warns about this.
+  cannot be reproduced from the current repository. 
 - **Recommendation to future users:** pin the repository version and model if
   exact-number reproduction matters; otherwise treat the framework as a
   research scaffold and compare *directional* performance on a fixed grid,
-  as we do here. Budget for API balance before long sweeps, it bit us once.
+  as we do here. Budget for API balance before long sweeps, it bit me once.
 
-## 8. Artifacts
 
-- GitHub: (fill in repo URL) — repro/ scripts, results, this report
-- Video: (fill in link)
