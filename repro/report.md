@@ -146,10 +146,6 @@ difference between correctly-cautious and confidently-wrong.
 8. Historical news availability is poor: for 2024 dates the news analyst
    often found zero articles ("zero of thirteen news calls") — live feeds
    do not archive 2024 news well.
-9. **Sweep run while travelling**: 12 cells failed with "Connection error"
-   when the laptop lost network on the road. Resumed again with the same
-   `--run-id` after regaining connectivity — nothing lost, no double spend.
-   Lesson: sweeps need an uninterrupted connection; check before launch.
 
 ## 7. Conclusions
 
@@ -170,7 +166,7 @@ difference between correctly-cautious and confidently-wrong.
 - **Recommendation to future users:** pin the repository version and model if
   exact-number reproduction matters; otherwise treat the framework as a
   research scaffold and compare *directional* performance on a fixed grid, as
-  we do here. Budget for API balance and stable connectivity (both bit us).
+  we do here. Budget for API balance before long sweeps (it bit us once).
 
 ## 8. Artifacts
 
