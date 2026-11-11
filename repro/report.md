@@ -17,12 +17,12 @@ on AAPL / GOOGL / AMZN, TradingAgents, powered by GPT-4o, earns cumulative
 returns of 26.62% / 24.36% / 23.21% versus buy-and-hold at -5.23% / 7.78% /
 17.1%. In other words, it beats buy-and-hold on every ticker.
 
-We reproduce the *same window and tasks* with the current public repository,
-using DeepSeek models because the original GPT-4o is not available to us, as
+I reproduce the *same window and tasks* with the current public repository,
+using DeepSeek models because the original GPT-4o is not available to me, as
 the assignment's edge case A allows. Results are therefore not directly
 comparable to the paper, since the underlying LLM differs.
 
-We score every decision with the repository's own backtest harness over a
+I score every decision with the repository's own backtest harness over a
 5-trading-day holding period, with alpha measured against SPY.
 
 ## 2. Setup notes
@@ -33,7 +33,7 @@ We score every decision with the repository's own backtest harness over a
   Quick tier, which serves analysts and trader, runs deepseek-flash;
   deep tier, which serves the managers, runs deepseek-v4-pro.
 - Data: yfinance for prices, technicals and news; SEC EDGAR for
-  point-in-time fundamentals; FRED macro unavailable because we have no key;
+  point-in-time fundamentals; FRED macro unavailable because I have no key;
   Polymarket unused.
 - To reproduce: `repro/run_backtest.sh`, see repro/README.md.
 
@@ -49,7 +49,7 @@ We score every decision with the repository's own backtest harness over a
 - **Baselines:** buy-and-hold over the same cells, computed by
   `repro/baseline.py`; paper Table 1 numbers for the full window.
 
-## 4. Results: ours vs reported
+## 4. Results: mine vs reported
 
 ### 4.1 Capability — qualitative
 
@@ -59,14 +59,14 @@ A smoke run on AAPL 2024-01-02 is saved under repro_results.
 
 ### 4.2 Backtest — quantitative
 
-|                         | Paper — GPT-4o, daily portfolio sim | Ours — DeepSeek, 21 cells              |
+|                         | Paper — GPT-4o, daily portfolio sim | Mine — DeepSeek, 21 cells             |
 | ----------------------- | ----------------------------------- | -------------------------------------- |
 | AAPL CR                 | 26.62%                              | system beats B&H per cell, table below |
 | GOOGL CR                | 24.36%                              | same                                   |
 | AMZN CR                 | 23.21%                              | same                                   |
-| B&H baseline, window CR | -5.23/7.78/17.1%                    | ours -10.8/+8.1/+18.7%                 |
+| B&H baseline, window CR | -5.23/7.78/17.1%                    | mine -10.8/+8.1/+18.7%                |
 
-Our 21-cell sweep — 7 dates × 3 tickers, 5-day holding, alpha vs SPY:
+My 21-cell sweep — 7 dates × 3 tickers, 5-day holding, alpha vs SPY:
 
 | Rating                  | n      | direction hit rate           | mean alpha vs SPY     |
 | ----------------------- | ------ | ---------------------------- | --------------------- |
@@ -92,7 +92,7 @@ see 4.3; the repo's own README does not claim it should be.
 - The repository evolved: the paper-era code is not v0.7.1. The repo README
   itself warns that backtest results "are not guaranteed to match any
   published figure".
-- The model differs, DeepSeek vs GPT-4o, which we declared per edge case A.
+- The model differs, DeepSeek vs GPT-4o, which I declared per edge case A.
 - The scoring differs: the paper simulates a daily-trading portfolio with
   CR/ARR/SR/MDD; the current harness scores independent per-cell directional
   calls over a 5-day holding period.
@@ -173,6 +173,6 @@ difference between correctly-cautious and confidently-wrong.
 - **Recommendation to future users:** pin the repository version and model if
   exact-number reproduction matters; otherwise treat the framework as a
   research scaffold and compare *directional* performance on a fixed grid,
-  as we do here. Budget for API balance before long sweeps, it bit me once.
+  as I do here. Budget for API balance before long sweeps, it bit me once.
 
 
