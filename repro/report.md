@@ -85,14 +85,14 @@ buy-and-hold on these tickers in Q1 2024 — is **directionally reproduced**
 with DeepSeek on the current codebase. The system's calls were right more
 often than not, and its alpha beat the market baseline. The 26.62%-magnitude
 CR is not reproducible with this harness because the scoring design differs,
-see 4.3; the repo's own README does not claim it should be.
+see 4.3.
 
 ### 4.3 Why the numbers differ — hidden assumptions
 
 - The repository evolved: the paper-era code is not v0.7.1. The repo README
   itself warns that backtest results "are not guaranteed to match any
   published figure".
-- The model differs, DeepSeek vs GPT-4o, which I declared per edge case A.
+- The model differs, DeepSeek vs GPT-4o.
 - The scoring differs: the paper simulates a daily-trading portfolio with
   CR/ARR/SR/MDD; the current harness scores independent per-cell directional
   calls over a 5-day holding period.
