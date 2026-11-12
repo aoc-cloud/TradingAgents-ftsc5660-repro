@@ -173,4 +173,8 @@ difference between correctly-cautious and confidently-wrong.
   research scaffold and compare *directional* performance on a fixed grid,
   as I do here. Budget for API balance before long sweeps, it bit me once.
 
+## 8. Artifacts
+
+- Presentation recording: https://drive.google.com/file/d/1FZjydSEIQpFBvdQ_J_QbBWb2NC64z1Cc/view?usp=drive_link
+
 
