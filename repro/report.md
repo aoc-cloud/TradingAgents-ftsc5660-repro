@@ -89,9 +89,7 @@ see 4.3.
 
 ### 4.3 Why the numbers differ — hidden assumptions
 
-- The repository evolved: the paper-era code is not v0.7.1. The repo README
-  itself warns that backtest results "are not guaranteed to match any
-  published figure".
+- The repository evolved: the paper-era code is not v0.7.1.
 - The model differs, DeepSeek vs GPT-4o.
 - The scoring differs: the paper simulates a daily-trading portfolio with
   CR/ARR/SR/MDD; the current harness scores independent per-cell directional
